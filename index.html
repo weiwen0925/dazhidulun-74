@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="wy-full-protection" content="v74-silent">
+<meta name="wy-full-protection" content="v74-silent-v2">
 <meta name="robots" content="noai, noimageai, noarchive, nosnippet">
 <meta name="googlebot" content="noai, noimageai, noarchive">
 <meta name="bingbot" content="noai, noimageai">
@@ -14,15 +14,27 @@
 <meta name="CCBot" content="noai">
 <meta name="PerplexityBot" content="noai">
 <style id="wy-preguard-css">
-/* L3 + L4 預守：未通過驗證前 html 不可見；通過後由 JS 移除此 style */
 html{visibility:hidden!important;background:#f7f3ec;}
-/* L3 @media print —— 列印時靜默全隱（無警語） */
 @media print{
   html,body,body *{display:none!important;visibility:hidden!important;}
   html::before,body::before{content:""!important;display:none!important;}
 }
 @page{size:auto;margin:0;}
 </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -1866,21 +1878,20 @@ h5{font-size:18.5px!important;}
   },true);
 })();
 </script>
-<script id="wy-protect-bundle" data-version="v74-silent">
+
+
+<script id="wy-protect-bundle" data-version="v74-silent-v2">
 (function(){
   var ALLOWED_HOST = 'weiwen0925.github.io';
   var ALLOWED_PATH = '/dazhidulun-74/';
 
-  /* === 靜默鎖定（無警告頁面） === */
-  var __locked = false;
+  var __locked = false, __readied = false;
   function _silentLock(reason){
-    if(__locked) return;
+    if(__locked || __readied) return;
     __locked = true;
     try{
-      // 清空 body，無任何文字／UI；title 也清空
       if(document.body) document.body.innerHTML = '';
       try{ document.title = ''; }catch(e){}
-      // 確保 html 永遠不可見
       var pg = document.getElementById('wy-preguard-css');
       if(!pg){
         var s = document.createElement('style');
@@ -1890,12 +1901,12 @@ h5{font-size:18.5px!important;}
     }catch(e){}
   }
 
-  /* === __wyReady promise（L1/L5 解碼器若存在會 await 它）=== */
   var _resolveReady;
   window.__wyReady = new Promise(function(res){ _resolveReady = res; });
 
   function _ready(){
-    // 通過驗證：移除 preguard，讓 html 可見
+    if(__readied || __locked) return;
+    __readied = true;
     var pg = document.getElementById('wy-preguard-css');
     if(pg) pg.parentNode.removeChild(pg);
     document.documentElement.style.visibility = '';
@@ -1918,76 +1929,71 @@ h5{font-size:18.5px!important;}
     return;
   }
 
-  /* === L4 · Origin Lock（同步檢查） === */
+  /* === L4 · Origin Lock（同步檢查；通過即顯示） === */
+  var hostOK = false, pathOK = false, isLocal = false;
   try{
     var host = (location.hostname || '').toLowerCase();
     var path = location.pathname || '';
-    var hostOK = (host === ALLOWED_HOST);
-    var pathOK = (path.indexOf(ALLOWED_PATH) === 0);
-    // 本地預覽（http://localhost / 127.0.0.1）允許通過，方便開發
-    var isLocal = (host === 'localhost' || host === '127.0.0.1' || host === '');
-    if(!isLocal && !(hostOK && pathOK)){
-      _silentLock('origin-mismatch');
-      return;
-    }
-  }catch(e){
-    _silentLock('origin-error');
+    hostOK = (host === ALLOWED_HOST);
+    pathOK = (path.indexOf(ALLOWED_PATH) === 0);
+    isLocal = (host === 'localhost' || host === '127.0.0.1' || host === '');
+  }catch(e){}
+
+  if(isLocal){
+    /* 本地預覽：直接放行（含 file:// 但 file:// 仍會被 L6 補刀） */
+    _ready();
+  } else if(hostOK && pathOK){
+    /* 合法網域：L4 通過即立刻顯示，L6 改為背景軟驗證 */
+    _ready();
+  } else {
+    /* 其他來源：靜默鎖定 */
+    _silentLock('origin-mismatch');
     return;
   }
 
-  /* === L6 · 線上活性驗證（HEAD ping，6s timeout） === */
-  function _freshness(){
+  /* === L6 · 背景軟驗證（fail-open；只有 file:// 才會真正鎖定）=== */
+  function _freshnessSoft(){
     var host = (location.hostname || '').toLowerCase();
-    if(host === 'localhost' || host === '127.0.0.1' || host === ''){
-      // 本地預覽跳過 freshness
-      _ready();
+    if(host === 'localhost' || host === '127.0.0.1'){
+      return; /* 本地預覽不驗證 */
+    }
+    if(host === ''){
+      /* file:// 場景：fetch 必然失敗，6s 後鎖定 */
+      var url0 = 'https://' + ALLOWED_HOST + ALLOWED_PATH;
+      var to0 = setTimeout(function(){ _silentLock('file-protocol'); }, 6000);
+      try{
+        fetch(url0, {method:'GET', mode:'no-cors', cache:'no-store'})
+          .then(function(){ clearTimeout(to0); /* 還是 ready */ })
+          .catch(function(){ /* 不取消 timeout，6s 後鎖定 */ });
+      }catch(e){}
       return;
     }
+    /* 合法網域：背景 ping 確認網路活著（純 best-effort，失敗不鎖定） */
     var url = 'https://' + ALLOWED_HOST + ALLOWED_PATH + '?_wyping=' + Date.now() + '.' + Math.random().toString(36).slice(2,8);
-    var ctrl;
-    var timed = false;
-    var to = setTimeout(function(){
-      timed = true;
-      if(ctrl) try{ ctrl.abort(); }catch(e){}
-      _silentLock('freshness-timeout');
-    }, 6000);
     try{
-      ctrl = (typeof AbortController === 'function') ? new AbortController() : null;
-      var opts = { method:'HEAD', cache:'no-store', credentials:'omit', mode:'cors', redirect:'follow' };
-      if(ctrl) opts.signal = ctrl.signal;
-      fetch(url, opts).then(function(r){
-        if(timed) return;
-        clearTimeout(to);
-        if(r && (r.ok || r.status === 0 || r.type === 'opaque')){
-          _ready();
-        } else {
-          _silentLock('freshness-bad');
-        }
-      }).catch(function(){
-        if(timed) return;
-        clearTimeout(to);
-        // 注意：HEAD 在 GH Pages 對自身 origin 通常允許；CORS 例外時也視為 fail
-        _silentLock('freshness-error');
-      });
-    }catch(e){
-      clearTimeout(to);
-      _silentLock('freshness-throw');
-    }
+      fetch(url, {method:'GET', mode:'no-cors', cache:'no-store'})
+        .then(function(){ /* 通過：no-op */ })
+        .catch(function(){ /* fail-open：no-op，已 ready */ });
+    }catch(e){}
   }
 
-  /* === L2 · 列印攔截（靜默；不彈警語）=== */
-  try{ window.print = function(){ /* noop */ }; }catch(e){}
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', _freshnessSoft);
+  } else {
+    _freshnessSoft();
+  }
+
+  /* === L2 · 列印攔截 === */
+  try{ window.print = function(){}; }catch(e){}
   document.addEventListener('keydown', function(e){
     var k = e.key || '';
     if((e.metaKey || e.ctrlKey) && (k === 'p' || k === 'P')){
       e.preventDefault(); e.stopPropagation();
     }
-    // 額外擋 ⌘S / Ctrl+S（另存）、⌘U / Ctrl+U（檢視原始碼）
     if((e.metaKey || e.ctrlKey) && (k === 's' || k === 'S' || k === 'u' || k === 'U')){
       e.preventDefault(); e.stopPropagation();
     }
   }, true);
-  // beforeprint 加碼：清空 body 樣式（再保險）
   window.addEventListener('beforeprint', function(){
     try{ document.documentElement.style.visibility = 'hidden'; }catch(e){}
   });
@@ -1996,13 +2002,6 @@ h5{font-size:18.5px!important;}
       if(window.__wyOriginOK) document.documentElement.style.visibility = '';
     }catch(e){}
   });
-
-  /* === 啟動：DOMContentLoaded 後跑 freshness === */
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', _freshness);
-  } else {
-    _freshness();
-  }
 })();
 </script>
 </body></html>" loading="lazy"></iframe>
