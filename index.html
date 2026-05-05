@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="wy-full-protection" content="v74-silent-v2">
+<meta name="wy-full-protection" content="v74-silent-v3">
 <meta name="robots" content="noai, noimageai, noarchive, nosnippet">
 <meta name="googlebot" content="noai, noimageai, noarchive">
 <meta name="bingbot" content="noai, noimageai">
@@ -13,14 +13,27 @@
 <meta name="Google-Extended" content="noai">
 <meta name="CCBot" content="noai">
 <meta name="PerplexityBot" content="noai">
-<style id="wy-preguard-css">
-html{visibility:hidden!important;background:#f7f3ec;}
+<style id="wy-print-guard-css">
 @media print{
   html,body,body *{display:none!important;visibility:hidden!important;}
   html::before,body::before{content:""!important;display:none!important;}
 }
 @page{size:auto;margin:0;}
 </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1880,117 +1893,82 @@ h5{font-size:18.5px!important;}
 </script>
 
 
-<script id="wy-protect-bundle" data-version="v74-silent-v2">
+
+
+<script id="wy-protect-bundle" data-version="v74-silent-v3">
 (function(){
+  /* v3：頁面預設可見；非法情境才清空 body */
   var ALLOWED_HOST = 'weiwen0925.github.io';
   var ALLOWED_PATH = '/dazhidulun-74/';
+  var __cleared = false;
 
-  var __locked = false, __readied = false;
-  function _silentLock(reason){
-    if(__locked || __readied) return;
-    __locked = true;
+  function _clearBody(reason){
+    if(__cleared) return;
+    __cleared = true;
     try{
       if(document.body) document.body.innerHTML = '';
       try{ document.title = ''; }catch(e){}
-      var pg = document.getElementById('wy-preguard-css');
-      if(!pg){
-        var s = document.createElement('style');
-        s.textContent = 'html{visibility:hidden!important;background:#f7f3ec;}';
-        document.head.appendChild(s);
-      }
+      // 加一塊隱形 style 確保 body 不再有可見內容
+      var s = document.createElement('style');
+      s.textContent = 'html,body{visibility:hidden!important;background:#f7f3ec!important;}';
+      (document.head || document.documentElement).appendChild(s);
     }catch(e){}
   }
 
-  var _resolveReady;
-  window.__wyReady = new Promise(function(res){ _resolveReady = res; });
-
-  function _ready(){
-    if(__readied || __locked) return;
-    __readied = true;
-    var pg = document.getElementById('wy-preguard-css');
-    if(pg) pg.parentNode.removeChild(pg);
-    document.documentElement.style.visibility = '';
-    window.__wyOriginOK = true;
-    _resolveReady && _resolveReady(true);
-  }
-
-  /* === B · Webdriver / Headless 偵測 === */
-  function _detectBot(){
-    try{
-      if(navigator.webdriver === true) return true;
-      if(/HeadlessChrome|PhantomJS|Selenium|puppeteer|playwright|Cypress/i.test(navigator.userAgent)) return true;
-      if(window.callPhantom || window._phantom) return true;
-      if(window.__nightmare) return true;
-      return false;
-    }catch(e){ return false; }
-  }
-  if(_detectBot()){
-    _silentLock('automated');
-    return;
-  }
-
-  /* === L4 · Origin Lock（同步檢查；通過即顯示） === */
-  var hostOK = false, pathOK = false, isLocal = false;
+  /* === B · webdriver / headless 偵測 === */
   try{
-    var host = (location.hostname || '').toLowerCase();
+    var bot = false;
+    if(navigator.webdriver === true) bot = true;
+    if(/HeadlessChrome|PhantomJS|Selenium|puppeteer|playwright|Cypress/i.test(navigator.userAgent || '')) bot = true;
+    if(window.callPhantom || window._phantom || window.__nightmare) bot = true;
+    if(bot){ _clearBody('automated'); return; }
+  }catch(e){}
+
+  /* === L4 · Origin Lock === */
+  var hostOK = false, pathOK = false, host = '';
+  try{
+    host = (location.hostname || '').toLowerCase();
     var path = location.pathname || '';
     hostOK = (host === ALLOWED_HOST);
     pathOK = (path.indexOf(ALLOWED_PATH) === 0);
-    isLocal = (host === 'localhost' || host === '127.0.0.1' || host === '');
-  }catch(e){}
+    var isLocal = (host === 'localhost' || host === '127.0.0.1');
+    var isFile  = (host === '' && location.protocol === 'file:');
 
-  if(isLocal){
-    /* 本地預覽：直接放行（含 file:// 但 file:// 仍會被 L6 補刀） */
-    _ready();
-  } else if(hostOK && pathOK){
-    /* 合法網域：L4 通過即立刻顯示，L6 改為背景軟驗證 */
-    _ready();
-  } else {
-    /* 其他來源：靜默鎖定 */
-    _silentLock('origin-mismatch');
-    return;
-  }
-
-  /* === L6 · 背景軟驗證（fail-open；只有 file:// 才會真正鎖定）=== */
-  function _freshnessSoft(){
-    var host = (location.hostname || '').toLowerCase();
-    if(host === 'localhost' || host === '127.0.0.1'){
-      return; /* 本地預覽不驗證 */
-    }
-    if(host === ''){
-      /* file:// 場景：fetch 必然失敗，6s 後鎖定 */
-      var url0 = 'https://' + ALLOWED_HOST + ALLOWED_PATH;
-      var to0 = setTimeout(function(){ _silentLock('file-protocol'); }, 6000);
-      try{
-        fetch(url0, {method:'GET', mode:'no-cors', cache:'no-store'})
-          .then(function(){ clearTimeout(to0); /* 還是 ready */ })
-          .catch(function(){ /* 不取消 timeout，6s 後鎖定 */ });
-      }catch(e){}
+    if(isLocal){
+      /* 本地預覽（http 開發伺服器） → 完全放行 */
+    } else if(isFile){
+      /* file:// 直接開啟 → 清空（離線散布防線） */
+      _clearBody('file-protocol');
+      return;
+    } else if(!(hostOK && pathOK)){
+      /* 其他來源（webarchive、wrong host）→ 清空 */
+      _clearBody('origin-mismatch');
       return;
     }
-    /* 合法網域：背景 ping 確認網路活著（純 best-effort，失敗不鎖定） */
-    var url = 'https://' + ALLOWED_HOST + ALLOWED_PATH + '?_wyping=' + Date.now() + '.' + Math.random().toString(36).slice(2,8);
-    try{
-      fetch(url, {method:'GET', mode:'no-cors', cache:'no-store'})
-        .then(function(){ /* 通過：no-op */ })
-        .catch(function(){ /* fail-open：no-op，已 ready */ });
-    }catch(e){}
+  }catch(e){
+    /* 出錯就放行（v3 設計：永不誤鎖合法用戶） */
   }
 
+  /* === L6 · 背景軟驗證（合法網域只是 best-effort，失敗不鎖定）=== */
+  function _softPing(){
+    if(host === 'localhost' || host === '127.0.0.1' || host === '') return;
+    try{
+      var url = 'https://' + ALLOWED_HOST + ALLOWED_PATH + '?_wyping=' + Date.now();
+      fetch(url, {method:'GET', mode:'no-cors', cache:'no-store'})
+        .catch(function(){ /* fail-open: 不鎖定 */ });
+    }catch(e){}
+  }
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', _freshnessSoft);
+    document.addEventListener('DOMContentLoaded', _softPing);
   } else {
-    _freshnessSoft();
+    _softPing();
   }
 
   /* === L2 · 列印攔截 === */
   try{ window.print = function(){}; }catch(e){}
   document.addEventListener('keydown', function(e){
     var k = e.key || '';
-    if((e.metaKey || e.ctrlKey) && (k === 'p' || k === 'P')){
-      e.preventDefault(); e.stopPropagation();
-    }
-    if((e.metaKey || e.ctrlKey) && (k === 's' || k === 'S' || k === 'u' || k === 'U')){
+    if((e.metaKey || e.ctrlKey) && (k === 'p' || k === 'P' || k === 's' || k === 'S' || k === 'u' || k === 'U')){
       e.preventDefault(); e.stopPropagation();
     }
   }, true);
@@ -1998,9 +1976,8 @@ h5{font-size:18.5px!important;}
     try{ document.documentElement.style.visibility = 'hidden'; }catch(e){}
   });
   window.addEventListener('afterprint', function(){
-    try{
-      if(window.__wyOriginOK) document.documentElement.style.visibility = '';
-    }catch(e){}
+    if(__cleared) return; /* 已清空就不還原 */
+    try{ document.documentElement.style.visibility = ''; }catch(e){}
   });
 })();
 </script>
