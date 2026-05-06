@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="wy-full-protection" content="v74-strict-v7">
+<meta name="wy-full-protection" content="v74-final-v8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="robots" content="noai, noimageai, noarchive, nosnippet">
 <meta name="googlebot" content="noai, noimageai, noarchive">
 <meta name="bingbot" content="noai, noimageai">
@@ -29,6 +32,21 @@ html,body,*{
 }
 img{-webkit-user-drag:none!important;pointer-events:none;}
 </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1971,17 +1989,15 @@ h5{font-size:18.5px!important;}
 
 
 
-<script id="wy-protect-bundle" data-version="v74-strict-v7">
+
+
+<script id="wy-protect-bundle" data-version="v74-final-v8">
 (function(){
-  /* v7 嚴格雙層：sync L4 + async L6 timeout-only */
+  /* v8：純 sync L4，零 async、零 fetch、零 timeout */
   var ALLOWED_HOST = 'weiwen0925.github.io';
   var ALLOWED_PATH = '/dazhidulun-74/';
-  var FRESHNESS_MS = 8000;
-  var __locked = false;
 
-  function _lock(reason){
-    if(__locked) return;
-    __locked = true;
+  function _lock(){
     try{
       if(document.body) document.body.innerHTML = '';
       try{ document.title = ''; }catch(e){}
@@ -1992,55 +2008,29 @@ h5{font-size:18.5px!important;}
     }catch(e){}
   }
 
-  /* === Sync L4：file:// / wrong origin / wrong path 立即鎖 === */
-  var host = '', path = '', proto = '';
-  var hostOK = false, pathOK = false, isLocalDev = false, isLegit = false, isFile = false;
+  /* === Sync L4：純同步原始決策，零異步路徑 === */
   try{
-    host  = (location.hostname || '').toLowerCase();
-    path  = location.pathname || '';
-    proto = (location.protocol || '').toLowerCase();
-    hostOK = (host === ALLOWED_HOST);
-    pathOK = (path.indexOf(ALLOWED_PATH) === 0);
-    isLocalDev = (host === 'localhost' || host === '127.0.0.1');
-    /* file:// 偵測：包含 file:// 直接協定，與 host=='' 但非 http(s) 的所有情境 */
-    isFile = (proto === 'file:') ||
-             (host === '' && proto !== 'http:' && proto !== 'https:');
-    isLegit = (hostOK && pathOK);
-  }catch(e){}
+    var host = (location.hostname || '').toLowerCase();
+    var path = location.pathname || '';
+    var proto = (location.protocol || '').toLowerCase();
+    var hostOK = (host === ALLOWED_HOST);
+    var pathOK = (path.indexOf(ALLOWED_PATH) === 0);
+    var isLocalDev = (host === 'localhost' || host === '127.0.0.1');
+    var isFile = (proto === 'file:') ||
+                 (host === '' && proto !== 'http:' && proto !== 'https:');
 
-  if(isFile){
-    _lock('file-protocol');
-    return;
-  }
-  if(!isLegit && !isLocalDev){
-    /* webarchive、wrong host、wrong path 全部即時鎖 */
-    _lock('not-allowed-origin');
-    return;
-  }
-
-  /* === Async L6：合法 origin 上做 timeout-only 線上活性驗證 === */
-  if(isLegit){
-    var timer;
-    var done = false;
-    function _cancel(){
-      done = true;
-      if(timer){ clearTimeout(timer); timer = null; }
+    if(isFile){
+      _lock();
+      return;
     }
-    timer = setTimeout(function(){
-      if(done) return;
-      done = true;
-      _lock('freshness-timeout');
-    }, FRESHNESS_MS);
-
-    try{
-      var url = 'https://' + ALLOWED_HOST + ALLOWED_PATH + '?_wyping=' + Date.now() + '.' + Math.random().toString(36).slice(2,8);
-      fetch(url, { method:'GET', mode:'no-cors', cache:'no-store' })
-        .then(function(){ _cancel(); })   /* 任何 response → 確認線上 → 不鎖 */
-        .catch(function(){ _cancel(); }); /* CORS/瞬間錯誤 → fail-open（已 sync L4 通過）→ 不鎖 */
-    }catch(e){
-      /* fetch 不可用（極舊瀏覽器）→ fail-open */
-      _cancel();
+    if(!(hostOK && pathOK) && !isLocalDev){
+      /* webarchive / wrong host / wrong path */
+      _lock();
+      return;
     }
+    /* 合法 → 不動，頁面繼續顯示 */
+  }catch(e){
+    /* 例外時 fail-open：合法用戶絕不誤鎖 */
   }
 
   /* === L2 列印攔截 === */
@@ -2074,7 +2064,7 @@ h5{font-size:18.5px!important;}
     try{ document.documentElement.style.visibility = 'hidden'; }catch(e){}
   });
   window.addEventListener('afterprint', function(){
-    if(__locked) return;
+    if(document.getElementById('wy-lock-css')) return;
     try{ document.documentElement.style.visibility = ''; }catch(e){}
   });
 })();
