@@ -92,7 +92,16 @@ body{margin:0;background:var(--bg);color:var(--text);
  font-family:"Noto Sans TC",sans-serif;}
 .toc-body{flex:1;}
 .toc-name{font-size:19.5px;font-weight:700;color:var(--accent);line-height:1.6;margin-bottom:6px;}
-.toc-sub{font-family:"Noto Sans TC",sans-serif;font-size:14.5px;color:var(--text-muted);line-height:1.6;}
+.toc-sub{font-family:"Noto Sans TC",sans-serif;font-size:14.5px;color:var(--text-muted);line-height:1.6;padding-bottom:18px;}
+.toc-card-wrap{position:relative;display:flex;}
+.toc-card-wrap .toc-card{flex:1;}
+.toc-video{position:absolute;right:14px;bottom:14px;z-index:3;display:inline-flex;align-items:center;gap:5px;
+  font-family:"Noto Sans TC",sans-serif;font-size:13px;font-weight:500;letter-spacing:1px;
+  color:#fff;text-decoration:none;padding:5px 13px;border-radius:16px;
+  background:linear-gradient(135deg,var(--gold),var(--goldL));
+  border:1px solid rgba(255,255,255,.25);box-shadow:0 2px 8px rgba(184,134,11,.35);
+  transition:transform .15s,box-shadow .2s,filter .2s;}
+.toc-video:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(184,134,11,.5);filter:brightness(1.08);}
 /* chapter */
 .chapter{margin:30px 0;}
 .ch-head{background:var(--headGrad);color:#f3e9d2;text-align:center;padding:42px 28px;margin-bottom:0;}
@@ -133,6 +142,23 @@ body{margin:0;background:var(--bg);color:var(--text);
  background:var(--gold);color:#fff;border:0;font-size:20px;cursor:pointer;display:none;z-index:120;
  box-shadow:0 4px 14px rgba(0,0,0,.25);}
 #backTop.show{display:block;}
+/* floating 本品影音 FAB (master-level, switches with active 品) */
+.wy-video-fab{position:fixed;right:22px;bottom:78px;z-index:121;
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:"Noto Sans TC",sans-serif;font-size:14px;font-weight:500;letter-spacing:1px;
+  color:#fff;text-decoration:none;padding:10px 18px;border-radius:26px;
+  background:linear-gradient(135deg,var(--gold),var(--goldL));
+  border:1px solid rgba(255,255,255,.3);box-shadow:0 4px 16px rgba(184,134,11,.4);
+  opacity:0;transform:translateY(16px);pointer-events:none;
+  transition:opacity .35s,transform .35s,box-shadow .2s,filter .2s;}
+.wy-video-fab.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+.wy-video-fab:hover{filter:brightness(1.08);box-shadow:0 6px 22px rgba(184,134,11,.55);}
+.wy-video-fab .wy-vf-play{display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.22);font-size:11px;}
+.wy-video-fab .wy-vf-tx{white-space:nowrap;}
+.wy-video-fab .wy-vf-name{font-weight:700;}
+@media(max-width:600px){.wy-video-fab{right:14px;bottom:70px;font-size:13px;padding:8px 14px;}}
+@media print{.wy-video-fab,.toc-video{display:none!important;}}
 /* hamburger */
 #sbToggle{display:none;position:fixed;left:14px;top:14px;z-index:130;width:42px;height:42px;
  border-radius:8px;background:var(--sbBg);color:var(--goldL);border:0;font-size:20px;cursor:pointer;}
@@ -147,41 +173,6 @@ body{margin:0;background:var(--bg);color:var(--text);
 @media(max-width:600px){
  body{font-size:17px;}.hero-title{font-size:32px;}.ch-name{font-size:26px;}
 }
-
-/* wy-cross-nav-css v1 */
-/* ── 跨卷導覽（側欄底部）── */
-.sb-cross{display:flex;flex-direction:column;align-items:center;gap:8px;
-  width:100%;margin:18px 0 4px;padding:18px 4px 6px;position:relative;}
-.sb-cross::before{content:"";position:absolute;top:0;left:14%;right:14%;
-  height:1px;background:linear-gradient(90deg,
-    transparent 0%,rgba(184,134,11,.15) 18%,
-    var(--gold,#b8860b) 50%,
-    rgba(184,134,11,.15) 82%,transparent 100%);
-  box-shadow:0 1px 0 rgba(212,168,75,.18);}
-.sb-cross::after{content:"";position:absolute;top:6px;left:38%;right:38%;
-  height:1px;background:linear-gradient(90deg,
-    transparent,rgba(184,134,11,.55),transparent);}
-.sb-x{display:flex;flex-direction:column;align-items:center;gap:3px;
-  text-decoration:none;color:var(--sbText,#d4c4a8);padding:4px 4px;width:100%;
-  border-radius:7px;transition:all .25s;}
-.sb-x:hover{background:rgba(184,134,11,.14);transform:translateY(-1px);}
-.sb-x-glyph{width:30px;height:30px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  border:1.2px solid rgba(212,196,168,.55);
-  color:var(--goldL,#d4a84b);font-family:"Noto Sans TC",sans-serif;font-size:14px;
-  background:rgba(184,134,11,.08);transition:all .25s;}
-.sb-x:hover .sb-x-glyph{border-color:var(--gold,#b8860b);color:#fff;
-  background:linear-gradient(135deg,var(--gold,#b8860b),var(--goldL,#d4a84b));
-  box-shadow:0 0 10px rgba(184,134,11,.5);}
-.sb-x-label{font-family:"Noto Sans TC",sans-serif;font-size:10.5px;
-  letter-spacing:1.2px;color:var(--sbText,#d4c4a8);opacity:.78;text-align:center;
-  line-height:1.25;}
-.sb-x:hover .sb-x-label{color:var(--goldL,#d4a84b);opacity:1;}
-.sb-x-hub .sb-x-glyph{background:linear-gradient(135deg,
-  rgba(184,134,11,.22),rgba(212,168,75,.18));
-  border-color:rgba(212,168,75,.55);color:var(--goldL,#d4a84b);font-size:13px;
-  font-weight:700;letter-spacing:1px;}
-
 </style><meta name="wy-full-protection" content="silent-v2">
 <meta name="ai-content-declaration" content="no-train">
 <meta name="referrer" content="no-referrer">
@@ -331,22 +322,7 @@ body{margin:0;background:var(--bg);color:var(--text);
 <a class="sb-brand" href="#top" id="sbBrand" title="回到頂部">
 <span class="sb-brand-line1">大智度論</span><span class="sb-brand-line2">卷七十四</span>
 <span class="sb-brand-arrow">↑ TOP</span></a>
-<nav class="sb-nav"><a class="sb-item" data-ch="1" href="#ch-1"><span class="sb-circle">一</span><span class="sb-label">轉不轉品</span></a><a class="sb-item" data-ch="2" href="#ch-2"><span class="sb-circle">二</span><span class="sb-label">釋燈炷品</span></a><a class="sb-item" data-ch="3" href="#ch-3"><span class="sb-circle">三</span><span class="sb-label">諸法如相</span></a></nav>  <!-- wy-cross-nav v1 -->
-  <div class="sb-cross">
-    <a class="sb-x" href="https://weiwen0925.github.io/dazhidulun-73/" title="第七十三卷">
-      <span class="sb-x-glyph">←</span>
-      <span class="sb-x-label">卷七十三</span>
-    </a>
-    <a class="sb-x sb-x-hub" href="https://weiwen0925.github.io/dazhidulun-0/" title="大智度論門頁">
-      <span class="sb-x-glyph">智</span>
-      <span class="sb-x-label">門頁</span>
-    </a>
-    <a class="sb-x" href="https://weiwen0925.github.io/dazhidulun-75/" title="第七十五卷">
-      <span class="sb-x-glyph">→</span>
-      <span class="sb-x-label">卷七十五</span>
-    </a>
-  </div>
-</aside>
+<nav class="sb-nav"><a class="sb-item" data-ch="1" href="#ch-1"><span class="sb-circle">一</span><span class="sb-label">轉不轉品</span></a><a class="sb-item" data-ch="2" href="#ch-2"><span class="sb-circle">二</span><span class="sb-label">釋燈炷品</span></a><a class="sb-item" data-ch="3" href="#ch-3"><span class="sb-circle">三</span><span class="sb-label">諸法如相</span></a></nav></aside>
 <main class="main">
 <div class="site-hero"><div class="hero-tag">聖者龍樹菩薩 造 · 後秦 鳩摩羅什 譯</div>
 <h1 class="hero-title">大智度論 · 第七十四卷</h1>
@@ -366,7 +342,7 @@ body{margin:0;background:var(--bg);color:var(--text);
 <div class="preface"><h2 class="preface-title">編者前言</h2><p>《大智度論》第七十四卷以「不退轉菩薩相」（阿鞞跋致）為主軸，三品環環相扣，共構出一套從破相、破功德執到破界限的中觀辯證體系。本彙整將原各品保留其完整的品內目次與排版，依「卷 → 品 → 章 → 節」四級層次重新編排，方便讀者在三品之間建立一致的閱讀地圖。</p><p>三品可視為一條由淺入深的見地階梯：第一品〈轉不轉品〉立「決定相不可得」的認知基線，回答菩薩何以「不退」；第二品〈釋燈炷品〉以燈炷生滅喻通功德因果與畢竟空，回答功德與空性如何並存；第三品〈般若無等與諸法如相〉以般若為導，破盡一切界限，歸於「諸法寂滅、如相不二」。</p><p>每品之前置「本品要旨」，每品之後置「承先啟後」，串起三品的內在邏輯；各品正文則保留原典【經】與龍樹釋論【論】的對照，以及邏輯解析圖式。願讀者循此拾級而上，於阿鞞跋致的不退之相中，得見諸法實相。</p></div>
 <div class="toc-section"><h2 class="toc-title">總 目 錄</h2>
 <div class="toc-desc">第七十四卷 · 全三品 · 共二十章</div>
-<div class="toc-grid"><a class="toc-card" href="#ch-1"><span class="toc-num">一</span><span class="toc-body"><span class="toc-name">品一　轉不轉品 · 阿鞞跋致的邏輯建築</span><span class="toc-sub">不退轉菩薩相 · 中觀心法與實踐拓撲（全八章）</span></span></a><a class="toc-card" href="#ch-2"><span class="toc-num">二</span><span class="toc-body"><span class="toc-name">品二　釋燈炷品（第五十七）</span><span class="toc-sub">從「四無礙智」到「畢竟空」的深觀與廣行（全七章）</span></span></a><a class="toc-card" href="#ch-3"><span class="toc-num">三</span><span class="toc-body"><span class="toc-name">品三　般若無等 · 諸法如相</span><span class="toc-sub">從世俗福德到諸法如相的辯證矩陣（全五章）</span></span></a></div></div>
+<div class="toc-grid"><div class="toc-card-wrap"><a class="toc-card" href="#ch-1"><span class="toc-num">一</span><span class="toc-body"><span class="toc-name">品一　轉不轉品 · 阿鞞跋致的邏輯建築</span><span class="toc-sub">不退轉菩薩相 · 中觀心法與實踐拓撲（全八章）</span></span></a><a class="toc-video" href="https://youtu.be/vGFMfRtLwlg" target="_blank" rel="noopener" title="觀看品一影音說明">▶ 影音</a></div><div class="toc-card-wrap"><a class="toc-card" href="#ch-2"><span class="toc-num">二</span><span class="toc-body"><span class="toc-name">品二　釋燈炷品（第五十七）</span><span class="toc-sub">從「四無礙智」到「畢竟空」的深觀與廣行（全七章）</span></span></a><a class="toc-video" href="https://youtu.be/iAlCjXlIiW4" target="_blank" rel="noopener" title="觀看品二影音說明">▶ 影音</a></div><div class="toc-card-wrap"><a class="toc-card" href="#ch-3"><span class="toc-num">三</span><span class="toc-body"><span class="toc-name">品三　般若無等 · 諸法如相</span><span class="toc-sub">從世俗福德到諸法如相的辯證矩陣（全五章）</span></span></a><a class="toc-video" href="https://youtu.be/5s0V6DKerGM" target="_blank" rel="noopener" title="觀看品三影音說明">▶ 影音</a></div></div></div>
 <section class="chapter" id="ch-1"><div class="ch-head"><div class="ch-num">卷七十四 · 品一</div><div class="ch-name">轉不轉品 · 阿鞞跋致的邏輯建築</div><div class="ch-sub">不退轉菩薩相 · 中觀心法與實踐拓撲（全八章）</div></div><div class="ch-body"><div class="bridge bridge-intro"><div class="bridge-label">本品要旨</div><p>本卷首品處理一個看似矛盾的命題：菩薩究竟「轉」或「不轉」？龍樹的回答不是在兩端擇一，而是指出——只要還在尋找一個可被決定的「相」，就已落入虛妄。本品以「決定相不可得」為認知基線，順次展開二諦圓融、留惑潤生、無相則無疑、破執三階與惡取空的勘驗，最終勾勒出從凡夫到阿鞞跋致、證得無生法忍的修證階梯。</p></div><iframe class="ch-frame" srcdoc="<!DOCTYPE html><html lang=zh-Hant><head><meta charset=UTF-8><link rel=stylesheet href='https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&amp;family=Noto+Sans+TC:wght@300;400;500;700&amp;display=swap'><style>
 :root{
  --bg:#f7f3ec;--text:#2c2416;--text2:#5a4e3a;--text-muted:#6B5B4B;
@@ -3122,7 +3098,9 @@ document.addEventListener('click',function(e){var a=e.target;
 </div>
 <div class="site-footer"><div class="ft-title">大智度論 · 第七十四卷</div>《大智度論》第七十四卷 · 第一品至第三品 經論彙整 · 聖者龍樹菩薩造 · 後秦鳩摩羅什譯</div>
 </main>
+<a id="wyVideo" class="wy-video-fab" href="https://youtu.be/vGFMfRtLwlg" target="_blank" rel="noopener" title="觀看本品影音說明"><span class="wy-vf-play">▶</span><span class="wy-vf-tx">本品影音 · <span class="wy-vf-name">轉不轉品</span></span></a>
 <button id="backTop">↑</button>
+<script>var WY_VIDEOS={"1": {"u": "https://youtu.be/vGFMfRtLwlg", "n": "轉不轉品"}, "2": {"u": "https://youtu.be/iAlCjXlIiW4", "n": "釋燈炷品"}, "3": {"u": "https://youtu.be/5s0V6DKerGM", "n": "諸法如相"}};</script>
 <script>
 var sbBrand=document.getElementById('sbBrand');
 if(sbBrand){sbBrand.addEventListener('click',function(e){e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});});}
@@ -3181,10 +3159,21 @@ function deepScrollTo(hash){
 window.addEventListener('hashchange',function(){deepScrollTo(location.hash);});
 if(/^#chapter-\d+-\d+/.test(location.hash))setTimeout(function(){deepScrollTo(location.hash);},900);
 /* active sidebar highlight */
+var wyVideo=document.getElementById('wyVideo');
+function updateVideoFab(act){
+ if(!wyVideo)return;
+ var n=act?parseInt((act.id||'').replace('ch-',''),10):0;
+ var v=(window.WY_VIDEOS&&WY_VIDEOS[n])?WY_VIDEOS[n]:null;
+ if(v){wyVideo.setAttribute('href',v.u);
+  var nm=wyVideo.querySelector('.wy-vf-name');if(nm)nm.textContent=v.n;
+  wyVideo.classList.add('show');}
+ else{wyVideo.classList.remove('show');}
+}
 function highlight(){var secs=document.querySelectorAll('section.chapter');var act=null;
  secs.forEach(function(s){if(s.getBoundingClientRect().top<window.innerHeight*0.35)act=s;});
  document.querySelectorAll('.sb-item').forEach(function(it){
-  it.classList.toggle('active',act&&('ch-'+it.getAttribute('data-ch'))===act.id);});}
+  it.classList.toggle('active',act&&('ch-'+it.getAttribute('data-ch'))===act.id);});
+ updateVideoFab(act);}
 window.addEventListener('scroll',highlight,{passive:true});highlight();
 /* outer anti-copy */
 (function(){var blk=function(e){e.preventDefault();return false;};
