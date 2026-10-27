@@ -1044,6 +1044,41 @@ document.addEventListener('click',function(e){var a=e.target;
       else{fallback(url);done();}}catch(err){fallback(url);done();}
   },true);
 })();</script>
+<script>
+(function(){ /* wy-tocfix v2 */
+  var Q=[&quot;ch-1&quot;,&quot;ch-2&quot;,&quot;ch-3&quot;,&quot;ch-4&quot;,&quot;ch-5&quot;,&quot;ch-6&quot;,&quot;ch-7&quot;,&quot;ch-8&quot;], CF=true, i, c, h, a, m, L=document.querySelectorAll('.toc-card'), A=document.querySelectorAll('a[href^=&quot;#&quot;]');
+  function go(id){
+    var el=document.getElementById(id); if(!el) return false;
+    try{ var fr=window.frameElement;
+      if(fr){ window.parent.scrollTo({top:window.parent.scrollY+fr.getBoundingClientRect().top+el.getBoundingClientRect().top-72,behavior:'smooth'}); return true; }
+    }catch(x){}
+    el.scrollIntoView({behavior:'smooth',block:'start'}); return true;
+  }
+  if(typeof window.goTo!=='function') window.goTo=function(id){ go(String(id).replace(/^#/,'')); };
+  if(CF) for(i=0;i<L.length&amp;&amp;i<Q.length;i++){ c=L[i];
+    if(/goTo\(/.test(c.getAttribute('onclick')||'')) continue;
+    h=(c.getAttribute('href')||'').slice(1);
+    if(c.tagName==='A'){ if(!h||!document.getElementById(h)) c.setAttribute('href','#'+Q[i]); }
+    else c.setAttribute('data-wy-go',Q[i]);
+  }
+  for(i=0;i<A.length;i++){ a=A[i]; if(a.classList.contains('toc-card')) continue;
+    h=a.getAttribute('href').slice(1); if(!h||h==='top'||document.getElementById(h)) continue;
+    m=/^chapter-(\d+)$/.exec(h); if(m&amp;&amp;Q[+m[1]-1]) a.setAttribute('href','#'+Q[+m[1]-1]);
+  }
+  if(false&amp;&amp;!document.getElementById('top')){ a=document.createElement('span'); a.id='top'; L[0]&amp;&amp;L[0].closest('section')? L[0].closest('section').insertBefore(a,L[0].closest('section').firstChild) : document.body.insertBefore(a,document.body.firstChild); }
+  document.addEventListener('click',function(e){
+    var s=e.target;
+    while(s&amp;&amp;s!==document){
+      if(s.classList&amp;&amp;s.classList.contains('wy-'+'yt')) return;
+      if(s.tagName==='A'&amp;&amp;s.getAttribute('href')) return;
+      if(s.hasAttribute&amp;&amp;s.hasAttribute('data-wy-go')) break;
+      s=s.parentElement;
+    }
+    if(!s||s===document) return;
+    if(go(s.getAttribute('data-wy-go'))) e.preventDefault();
+  },true);
+})();
+</script>
 </body></html>"></iframe><div class="bridge bridge-outro"><div class="bridge-label">承先啟後</div><p>首品確立了「無相則無疑」的確定性來源，並以修證階梯收束。承此而下，第二品〈釋燈炷品〉將追問：既然不退轉相不可得，菩薩的「四無礙智」與無量功德又從何安立？下一品以四無礙智與「深奧處」為樞紐，把焦點從「認知基線」推進到「功德因果」的辯證。</p></div><a class="next-link" href="#ch-2">前往品二 →</a></div></section><section class="chapter" id="ch-2"><div class="ch-head"><div class="ch-num">卷七十四 · 品二</div><div class="ch-name">釋燈炷品（第五十七）</div><div class="ch-sub">從「四無礙智」到「畢竟空」的深觀與廣行（全七章）</div></div><div class="ch-body"><div class="bridge bridge-intro"><div class="bridge-label">本品要旨</div><p>承前品「決定相不可得」之後，本品轉入功德論的核心難題：功德的累積與「畢竟空」如何並存？〈釋燈炷品〉前段以四無礙智與「深奧處」為樞紐，順著溯源、破執、顯正、生福四個向度逐層推進——先溯四無礙智的因果鏈，再以動態三階掃蕩執取，確立畢竟空，最後在「無量福德的空性悖論」中說明廣行與深觀並行不悖。</p></div><iframe class="ch-frame" srcdoc="<!DOCTYPE html><html lang=zh-Hant><head><meta charset=UTF-8><link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&amp;family=Noto+Sans+TC:wght@300;400;500;700&amp;display=swap' media='print' onload=&quot;this.media='all'&quot;><noscript><link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&amp;family=Noto+Sans+TC:wght@300;400;500;700&amp;display=swap'></noscript><style>
 :root{
   --bg:#f7f3ec;--text:#2c2416;--text2:#5a4e3a;--text-muted:#6B5B4B;
@@ -3148,7 +3183,42 @@ document.addEventListener('click',function(e){var a=e.target;
       navigator.clipboard.writeText(url).then(done,function(){fallback(url);done();});}
       else{fallback(url);done();}}catch(err){fallback(url);done();}
   },true);
-})();</script></body></html>"></iframe><div class="bridge bridge-outro"><div class="bridge-label">全卷收束</div><p>第三品以「諸法如相、本自寂滅」總結卷七十四：阿鞞跋致之所以不退，正因其見地已徹至諸法實相，無相可退、無法可轉。三品脈絡至此圓滿——破相、破功德執、破界限，終歸般若無等之如相。</p></div></div></section>
+})();</script><script>
+(function(){ /* wy-tocfix v2 */
+  var Q=[&quot;chapter-1&quot;,&quot;chapter-2&quot;,&quot;chapter-3&quot;,&quot;chapter-4&quot;,&quot;chapter-5&quot;], CF=false, i, c, h, a, m, L=document.querySelectorAll('.toc-card'), A=document.querySelectorAll('a[href^=&quot;#&quot;]');
+  function go(id){
+    var el=document.getElementById(id); if(!el) return false;
+    try{ var fr=window.frameElement;
+      if(fr){ window.parent.scrollTo({top:window.parent.scrollY+fr.getBoundingClientRect().top+el.getBoundingClientRect().top-72,behavior:'smooth'}); return true; }
+    }catch(x){}
+    el.scrollIntoView({behavior:'smooth',block:'start'}); return true;
+  }
+  if(typeof window.goTo!=='function') window.goTo=function(id){ go(String(id).replace(/^#/,'')); };
+  if(CF) for(i=0;i<L.length&amp;&amp;i<Q.length;i++){ c=L[i];
+    if(/goTo\(/.test(c.getAttribute('onclick')||'')) continue;
+    h=(c.getAttribute('href')||'').slice(1);
+    if(c.tagName==='A'){ if(!h||!document.getElementById(h)) c.setAttribute('href','#'+Q[i]); }
+    else c.setAttribute('data-wy-go',Q[i]);
+  }
+  for(i=0;i<A.length;i++){ a=A[i]; if(a.classList.contains('toc-card')) continue;
+    h=a.getAttribute('href').slice(1); if(!h||h==='top'||document.getElementById(h)) continue;
+    m=/^chapter-(\d+)$/.exec(h); if(m&amp;&amp;Q[+m[1]-1]) a.setAttribute('href','#'+Q[+m[1]-1]);
+  }
+  if(true&amp;&amp;!document.getElementById('top')){ a=document.createElement('span'); a.id='top'; L[0]&amp;&amp;L[0].closest('section')? L[0].closest('section').insertBefore(a,L[0].closest('section').firstChild) : document.body.insertBefore(a,document.body.firstChild); }
+  document.addEventListener('click',function(e){
+    var s=e.target;
+    while(s&amp;&amp;s!==document){
+      if(s.classList&amp;&amp;s.classList.contains('wy-'+'yt')) return;
+      if(s.tagName==='A'&amp;&amp;s.getAttribute('href')) return;
+      if(s.hasAttribute&amp;&amp;s.hasAttribute('data-wy-go')) break;
+      s=s.parentElement;
+    }
+    if(!s||s===document) return;
+    if(go(s.getAttribute('data-wy-go'))) e.preventDefault();
+  },true);
+})();
+</script>
+</body></html>"></iframe><div class="bridge bridge-outro"><div class="bridge-label">全卷收束</div><p>第三品以「諸法如相、本自寂滅」總結卷七十四：阿鞞跋致之所以不退，正因其見地已徹至諸法實相，無相可退、無法可轉。三品脈絡至此圓滿——破相、破功德執、破界限，終歸般若無等之如相。</p></div></div></section>
 <div data-wy-notice="v2" style="margin:0;padding:26px 20px;background:#1e1a14;
   border-top:2px solid #b8860b;text-align:center;
   font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;
